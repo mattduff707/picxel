@@ -84,19 +84,29 @@ export const getGridImages = async ({
     });
   });
 
-  return gridImages;
+  return gridImages.flat();
 };
 
-export const scrambleGrid = (grid: GridImage[][]) => {
-  const gridCopy = grid.map((row) => [...row]);
-  const scrambledGrid = gridCopy.map((row) => {
-    return row.map((gridImage) => {
-      const randomRow = Math.floor(Math.random() * grid.length);
-      const randomColumn = Math.floor(Math.random() * grid[0].length);
-      const temp = gridCopy[randomRow][randomColumn];
-      gridCopy[randomRow][randomColumn] = gridImage;
-      return temp;
-    });
-  });
-  return scrambledGrid;
+export const scrambleGrid = (unshuffled: GridImage[]) => {
+  const shuffled = unshuffled
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+  return shuffled;
+
+  // const gridCopy = grid.map((row) => [...row]);
+  // const scrambledGrid = gridCopy.map((row) => {
+  //   return row.map((gridImage) => {
+  //     const randomRow = Math.floor(Math.random() * grid.length);
+  //     const randomColumn = Math.floor(Math.random() * grid[0].length);
+  //     const temp = gridCopy[randomRow][randomColumn];
+  //     gridCopy[randomRow][randomColumn] = gridImage;
+  //     return temp;
+  //   });
+  // });
+
+  // scramble image grid by swapping images
+  // const scrambledGrid = grid.map((row) => [...row]);
+
+  // return scrambledGrid;
 };
