@@ -59,25 +59,6 @@ export const getGridImages = async ({
     ? ctx?.drawImage(img, 0, 0, size.width, size.height)
     : ctx?.drawImage(img, 0, 0);
 
-  //   const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
-  // const imageDataTL = ctx?.getImageData(0, 0, 400, 400);
-  // const imageDataTR = ctx?.getImageData(400, 0, 400, 400);
-  // const imageDataBL = ctx?.getImageData(0, 400, 400, 400);
-  // const imageDataBR = ctx?.getImageData(400, 400, 400, 400);
-
-  // const images = [imageDataTL, imageDataTR, imageDataBL, imageDataBR].map(
-  //   (imgData) => {
-  //     const canvas2 = document.createElement("canvas");
-  //     const ctx2 = canvas2.getContext("2d");
-  //     canvas2.width = imgData?.width;
-  //     canvas2.height = imgData?.height;
-
-  //     ctx2?.putImageData(imgData!, 0, 0);
-
-  //     return canvas2.toDataURL("image/png");
-  //   }
-  // );
-
   const gridArr = getGridArr(grid, extractionWidth, extractionHeight);
   const gridImages = gridArr.map((row) => {
     return row.map((gridImage) => {
@@ -89,34 +70,33 @@ export const getGridImages = async ({
         extractionHeight
       );
 
-      const canvas2 = document.createElement("canvas");
-      const ctx2 = canvas2.getContext("2d");
-      canvas2.width = imageData?.width;
-      canvas2.height = imageData?.height;
+      const extractedCanvas = document.createElement("canvas");
+      const extractedCtx = extractedCanvas.getContext("2d");
+      extractedCanvas.width = imageData?.width;
+      extractedCanvas.height = imageData?.height;
 
-      ctx2?.putImageData(imageData!, 0, 0);
+      extractedCtx?.putImageData(imageData!, 0, 0);
 
       return {
-        imgSrc: canvas2.toDataURL("image/png"),
+        imgSrc: extractedCanvas.toDataURL("image/png"),
         position: { row, column, sx, sy },
       };
     });
   });
 
-  // console.log(gridImages);
-
   return gridImages;
+};
 
-  //   console.log(imageData);
-
-  //   const canvas2 = document.createElement("canvas");
-  //   const ctx2 = canvas2.getContext("2d");
-  //   canvas2.width = imageData?.width;
-  //   canvas2.height = imageData?.height;
-
-  //   ctx2?.putImageData(imageData!, 0, 0);
-
-  //   return canvas;
-
-  //   return canvas2.toDataURL("image/png");
+export const scrambleGrid = (grid: GridImage[][]) => {
+  const gridCopy = grid.map((row) => [...row]);
+  const scrambledGrid = gridCopy.map((row) => {
+    return row.map((gridImage) => {
+      const randomRow = Math.floor(Math.random() * grid.length);
+      const randomColumn = Math.floor(Math.random() * grid[0].length);
+      const temp = gridCopy[randomRow][randomColumn];
+      gridCopy[randomRow][randomColumn] = gridImage;
+      return temp;
+    });
+  });
+  return scrambledGrid;
 };
